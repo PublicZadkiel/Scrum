@@ -31,9 +31,11 @@ class VistaLogin(tk.Frame):
                                     command=self.iniciar_reconocimiento_facial)
         self.btn_facial.pack(pady=10)
         
-        
         self.lbl_estado_facial = None
 
+    def login_contrasena(self):
+        usuario = self.entrada_usuario.get()
+        contrasena = self.entrada_contrasena.get()
         
         resultado = self.controlador.manejar_login(usuario, contrasena)
         
@@ -76,7 +78,6 @@ class VistaLogin(tk.Frame):
         
         self.btn_facial.config(state=tk.DISABLED, text="RECONOCIENDO ROSTRO...")
         
-        
         if self.lbl_estado_facial:
             self.lbl_estado_facial.destroy()
 
@@ -109,11 +110,9 @@ class VistaLogin(tk.Frame):
             self.estado_reconocimiento_facial = None
             
         elif resultado == "ESPERANDO":
-            
             self.estado_reconocimiento_facial = self.after(50, self.verificar_rostro)
             
         elif resultado and resultado != "ESPERANDO":
-            
             messagebox.showerror("Error de Reconocimiento", "Rostro detectado, pero no coincide con los usuarios registrados.")
             if self.lbl_estado_facial: self.lbl_estado_facial.destroy()
             self.btn_facial.config(state=tk.NORMAL, text="Login Facial (Reconocimiento)")
