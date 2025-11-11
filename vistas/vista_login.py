@@ -7,7 +7,6 @@ class VistaLogin(tk.Frame):
         super().__init__(maestro)
         self.controlador = controlador
         self.estado_reconocimiento = None
-        # Nuevo atributo para el reconocimiento facial (igual que el de gesto)
         self.estado_reconocimiento_facial = None 
         
         tk.Label(self, text="INICIO DE SESIÓN", font=("Arial", 16)).pack(pady=20)
@@ -22,25 +21,19 @@ class VistaLogin(tk.Frame):
 
         tk.Button(self, text="Login con Contraseña", command=self.login_contrasena).pack(pady=10)
         
-        # Botón de Login Gesto existente
         self.btn_gesto = tk.Button(self, 
                                    text="Login con Gesto (Pulgar Arriba)", 
                                    command=self.iniciar_login_gesto)
         self.btn_gesto.pack(pady=10)
 
-        # 🚀 NUEVO BOTÓN PARA RECONOCIMIENTO FACIAL
         self.btn_facial = tk.Button(self, 
                                     text="Login Facial (Reconocimiento)", 
                                     command=self.iniciar_reconocimiento_facial)
         self.btn_facial.pack(pady=10)
         
-        # Etiqueta para mensajes temporales durante la detección facial
+        
         self.lbl_estado_facial = None
 
-
-    def login_contrasena(self):
-        usuario = self.entrada_usuario.get()
-        contrasena = self.entrada_contrasena.get()
         
         resultado = self.controlador.manejar_login(usuario, contrasena)
         
@@ -73,7 +66,6 @@ class VistaLogin(tk.Frame):
         elif resultado == "ESPERANDO":
             self.estado_reconocimiento = self.after(10, self.verificar_gesto)
 
-    # 🚀 NUEVOS MÉTODOS PARA RECONOCIMIENTO FACIAL
 
     def iniciar_reconocimiento_facial(self):
         resultado_inicio = self.controlador.manejar_login_facial()
@@ -84,7 +76,7 @@ class VistaLogin(tk.Frame):
         
         self.btn_facial.config(state=tk.DISABLED, text="RECONOCIENDO ROSTRO...")
         
-        # Muestra la etiqueta de estado
+        
         if self.lbl_estado_facial:
             self.lbl_estado_facial.destroy()
 
@@ -117,11 +109,11 @@ class VistaLogin(tk.Frame):
             self.estado_reconocimiento_facial = None
             
         elif resultado == "ESPERANDO":
-            # Si sigue esperando, reprograma la verificación
+            
             self.estado_reconocimiento_facial = self.after(50, self.verificar_rostro)
             
         elif resultado and resultado != "ESPERANDO":
-            # Cualquier otro error, como "Rostro no reconocido"
+            
             messagebox.showerror("Error de Reconocimiento", "Rostro detectado, pero no coincide con los usuarios registrados.")
             if self.lbl_estado_facial: self.lbl_estado_facial.destroy()
             self.btn_facial.config(state=tk.NORMAL, text="Login Facial (Reconocimiento)")
