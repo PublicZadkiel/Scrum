@@ -13,6 +13,7 @@ class ControladorPrincipal:
         self.modelo = ModeloUsuario()
         self.raiz.title("Sistema MVC Tkinter")
         
+        # Asumiendo que la IP para DroidCam sigue siendo la misma:
         self.recognizer_gestos = ReconocedorGestos('http://192.168.0.7:4747/video') 
         self.recognizer_facial = ReconocedorFacial()
         
@@ -60,14 +61,19 @@ class ControladorPrincipal:
     def procesar_reconocimiento_facial(self):
         rol_o_estado = self.recognizer_facial.reconocer_rostro()
 
-        if rol_o_estado and rol_o_estado not in ["SALIENDO", "ESPERANDO_GESTO"]:
+        # Corregir la lista de estados que no deben avanzar el login
+        if rol_o_estado and rol_o_estado not in ["SALIENDO", "ESPERANDO"]:
             self.recognizer_facial.detener_camara()
             
+            # 🐞 CORRECCIÓN CLAVE: Definición de la variable rol_o_usuario
+            # El valor devuelto (rol_o_estado) es el nombre de usuario/rol
+            rol_o_usuario = rol_o_estado
             
             usuario_id = self.modelo.obtener_id_por_usuario(rol_o_usuario)
             
             if usuario_id:
                 self.modelo.usuario_actual_id = usuario_id
+                # El valor debe ser el rol (que en el caso de las imágenes es el nombre de usuario)
                 return self._cargar_panel(rol_o_usuario) 
             else:
                 return "USUARIO_NO_AUTORIZADO" 
@@ -87,6 +93,9 @@ class ControladorPrincipal:
     
     def manejar_cerrar_sesion(self):
         self.modelo.usuario_actual_id = None
+        # ✅ CORRECCIÓN: Detener ambas cámaras al cerrar sesión
+        self.recognizer_gestos.detener_camara()
+        self.recognizer_facial.detener_camara()
         self.cambiar_vista(VistaLogin)
 
     def obtener_info_usuario_actual(self):
