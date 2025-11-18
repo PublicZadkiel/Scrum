@@ -36,14 +36,18 @@ class ModeloUsuario:
             conn.close()
 
     def obtener_id_por_usuario(self, nombre_usuario):
+        nombre_usuario_normalizado = nombre_usuario.lower()
+        
         conn = self._conectar()
         if conn is None: return None
         cursor = conn.cursor()
         
         try:
-            # Nuevo método para buscar el ID necesario para el reconocimiento facial
-            cursor.execute("SELECT id FROM usuarios WHERE usuario = %s LIMIT 1", (nombre_usuario,))
+            query = "SELECT id FROM usuarios WHERE LOWER(usuario) = %s LIMIT 1"
+            cursor.execute(query, (nombre_usuario_normalizado,))
+            
             resultado = cursor.fetchone()
+            
             return resultado[0] if resultado else None
         except Error:
             return None

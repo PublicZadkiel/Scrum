@@ -2,8 +2,8 @@ from modelos.modelo_usuario import ModeloUsuario
 from vistas.vista_login import VistaLogin
 from vistas.vista_perfil_usuario import VistaPerfilUsuario
 from vistas.vista_administrador import VistaAdministrador
-from utilidades.vision_gestos import ReconocedorGestos
-from utilidades.reconocimiento_facial import ReconocedorFacial
+from modelos.vision_gestos import ReconocedorGestos
+from modelos.reconocimiento_facial import ReconocedorFacial
 import tkinter as tk
 
 class ControladorPrincipal:

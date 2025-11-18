@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from controladores.controlador_principal import ControladorPrincipal
 
 if __name__ == "__main__":
