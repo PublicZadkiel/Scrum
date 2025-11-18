@@ -2,8 +2,8 @@ from modelos.modelo_usuario import ModeloUsuario
 from vistas.vista_login import VistaLogin
 from vistas.vista_perfil_usuario import VistaPerfilUsuario
 from vistas.vista_administrador import VistaAdministrador
-from utilidades.vision_gestos import ReconocedorGestos
-from utilidades.reconocimiento_facial import ReconocedorFacial
+from modelos.vision_gestos import ReconocedorGestos
+from modelos.reconocimiento_facial import ReconocedorFacial
 import tkinter as tk
 
 class ControladorPrincipal:
@@ -60,9 +60,12 @@ class ControladorPrincipal:
     def procesar_reconocimiento_facial(self):
         rol_o_estado = self.recognizer_facial.reconocer_rostro()
 
-        if rol_o_estado and rol_o_estado not in ["SALIENDO", "ESPERANDO_GESTO"]:
+        
+        if rol_o_estado and rol_o_estado not in ["SALIENDO", "ESPERANDO"]:
             self.recognizer_facial.detener_camara()
             
+            
+            rol_o_usuario = rol_o_estado
             
             usuario_id = self.modelo.obtener_id_por_usuario(rol_o_usuario)
             
@@ -87,6 +90,8 @@ class ControladorPrincipal:
     
     def manejar_cerrar_sesion(self):
         self.modelo.usuario_actual_id = None
+        self.recognizer_gestos.detener_camara()
+        self.recognizer_facial.detener_camara()
         self.cambiar_vista(VistaLogin)
 
     def obtener_info_usuario_actual(self):
